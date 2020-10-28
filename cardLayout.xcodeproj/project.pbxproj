@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E28B11425491CBA00EE5DE6 /* sequence+sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E28B11325491CBA00EE5DE6 /* sequence+sort.swift */; };
 		1E41EDF12A2E897686EF0CB3 /* Pods_cardLayoutTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E1AFA5913AC0629F3E7701 /* Pods_cardLayoutTests.framework */; };
 		1E4F47C3252D7B0C00378EAF /* MyHeaderFooterClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4F47C1252D7B0C00378EAF /* MyHeaderFooterClass.swift */; };
 		1E4F47C4252D7B0C00378EAF /* MyHeaderFooterClass.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E4F47C2252D7B0C00378EAF /* MyHeaderFooterClass.xib */; };
 		1E4F47C9252D8F3300378EAF /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4F47C8252D8F3300378EAF /* CardView.swift */; };
 		1E6893652549054C002D35AD /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E6893642549054C002D35AD /* Helper.swift */; };
-		1EB2F234252EE34F00BE9DF2 /* sequence+sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB2F233252EE34F00BE9DF2 /* sequence+sort.swift */; };
 		1EE085CB2547DDAA003A46AB /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE085CA2547DDAA003A46AB /* Date+Extension.swift */; };
 		1EE085D12547EA80003A46AB /* Diary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE085D02547EA80003A46AB /* Diary.swift */; };
 		1EE085E825480203003A46AB /* DiaryDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE085E725480203003A46AB /* DiaryDetailViewController.swift */; };
@@ -48,11 +48,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1E28B11325491CBA00EE5DE6 /* sequence+sort.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "sequence+sort.swift"; sourceTree = "<group>"; };
 		1E4F47C1252D7B0C00378EAF /* MyHeaderFooterClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHeaderFooterClass.swift; sourceTree = "<group>"; };
 		1E4F47C2252D7B0C00378EAF /* MyHeaderFooterClass.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MyHeaderFooterClass.xib; sourceTree = "<group>"; };
 		1E4F47C8252D8F3300378EAF /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		1E6893642549054C002D35AD /* Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
-		1EB2F233252EE34F00BE9DF2 /* sequence+sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "sequence+sort.swift"; path = "../New Group/sequence+sort.swift"; sourceTree = "<group>"; };
 		1EE085CA2547DDAA003A46AB /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		1EE085D02547EA80003A46AB /* Diary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diary.swift; sourceTree = "<group>"; };
 		1EE085E725480203003A46AB /* DiaryDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryDetailViewController.swift; sourceTree = "<group>"; };
@@ -122,7 +122,7 @@
 		1EE085F425482BAA003A46AB /* extension */ = {
 			isa = PBXGroup;
 			children = (
-				1EB2F233252EE34F00BE9DF2 /* sequence+sort.swift */,
+				1E28B11325491CBA00EE5DE6 /* sequence+sort.swift */,
 				1EE085CA2547DDAA003A46AB /* Date+Extension.swift */,
 				1EE085F525482BD5003A46AB /* Viewcontroller+Extension.swift */,
 			);
@@ -483,9 +483,9 @@
 				1EE085E825480203003A46AB /* DiaryDetailViewController.swift in Sources */,
 				9040A6291FAE741200D89A53 /* ViewController.swift in Sources */,
 				9040A6271FAE741200D89A53 /* AppDelegate.swift in Sources */,
-				1EB2F234252EE34F00BE9DF2 /* sequence+sort.swift in Sources */,
 				9040A6551FAE7A6600D89A53 /* CollectionViewCell.swift in Sources */,
 				1EE085D12547EA80003A46AB /* Diary.swift in Sources */,
+				1E28B11425491CBA00EE5DE6 /* sequence+sort.swift in Sources */,
 				1EE085CB2547DDAA003A46AB /* Date+Extension.swift in Sources */,
 				1E4F47C9252D8F3300378EAF /* CardView.swift in Sources */,
 				1EE085ED254826F5003A46AB /* NetworkReachability.swift in Sources */,

@@ -1,9 +1,6 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import RxAlamofire
-import Alamofire
-import SwiftyJSON
 
 class ViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, CollectionViewCellDelegate {
 
@@ -130,7 +127,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
 
         case UICollectionElementKindSectionHeader:
             let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: collectionViewHeaderFooterReuseIdentifier, for: indexPath) as! MyHeaderFooterClass
-
+            
             if self.groupSortedDiary[indexPath.section].count > 0 {
                 let cell_obj = self.groupSortedDiary[indexPath.section][indexPath.row]
                 
@@ -233,9 +230,12 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
             controller?.savedDiary
               .subscribe(
                 onNext: { [weak self] editDiary in
-                    self?.groupSortedDiary[(self?.diaryEditedIndexPath!.section)!][(self?.diaryEditedIndexPath!.row)!] = editDiary
-                    self?.collectionView.reloadData()
-                    self?.saveLocal()
+                    if let indexPath = self?.diaryEditedIndexPath{
+                        self?.groupSortedDiary[indexPath.section][indexPath.row] = editDiary
+                        self?.collectionView.reloadData()
+                        self?.saveLocal()
+                    }
+                    
                     self?.navigationController?.popViewController(animated: true)
                 },
                 onDisposed: {
