@@ -104,8 +104,8 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
     
     func processDiaries(_ newDiaries: [Diary]) {
       var updatedDiaries = newDiaries + diaries.value
-      if updatedDiaries.count > 16 {
-        updatedDiaries = [Diary](updatedDiaries.prefix(upTo: 16))
+      if updatedDiaries.count > 50 {
+        updatedDiaries = [Diary](updatedDiaries.prefix(upTo: 50))
       }
 
       diaries.accept(updatedDiaries)

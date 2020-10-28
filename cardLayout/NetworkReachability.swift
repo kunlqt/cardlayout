@@ -17,26 +17,39 @@ class NetworkReachability {
   }()
 
   func startNetworkMonitoring() {
-    reachabilityManager?.listener = { status in
-            switch status {
-
-                case .notReachable:
-                    print("The network is not reachable")
-                    self.showOfflineAlert()
-                case .unknown :
-                    print("It is unknown whether the network is reachable")
-                    self.showOfflineAlert()
-                case .reachable(.ethernetOrWiFi):
-                    print("The network is reachable over the WiFi connection")
-                    self.dismissOfflineAlert()
-                case .reachable(.wwan):
-                    print("The network is reachable over the WWAN connection")
-                    self.dismissOfflineAlert()
-                }
-            }
-
-            // start listening
-            reachabilityManager?.startListening()
+//    reachabilityManager?.listener = { status in
+//            switch status {
+//
+//                case .notReachable:
+//                    print("The network is not reachable")
+//                    self.showOfflineAlert()
+//                case .unknown :
+//                    print("It is unknown whether the network is reachable")
+//                    self.showOfflineAlert()
+//                case .reachable(.ethernetOrWiFi):
+//                    print("The network is reachable over the WiFi connection")
+//                    self.dismissOfflineAlert()
+//                case .reachable(.wwan):
+//                    print("The network is reachable over the WWAN connection")
+//                    self.dismissOfflineAlert()
+//                }
+//            }
+//
+//            // start listening
+//            reachabilityManager?.startListening()
+    
+    reachabilityManager?.startListening { status in
+      switch status {
+      case .notReachable:
+        self.showOfflineAlert()
+      case .reachable(.cellular):
+        self.dismissOfflineAlert()
+      case .reachable(.ethernetOrWiFi):
+        self.dismissOfflineAlert()
+      case .unknown:
+        print("Unknown network state")
+      }
+    }
   }
     
     

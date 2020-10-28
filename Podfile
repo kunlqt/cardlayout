@@ -6,10 +6,10 @@ target 'cardLayout' do
   use_frameworks!
 
   # Pods for cardLayout
-  pod 'RxSwift', '4.4.1'
-  pod 'RxCocoa', '4.4.1'
-pod 'RxAlamofire', '4.3.0'
-pod 'SwiftyJSON'
+  pod 'RxSwift'
+  pod 'RxCocoa'
+  pod 'RxAlamofire'
+  pod 'SwiftyJSON'
   target 'cardLayoutTests' do
     inherit! :search_paths
     # Pods for testing
