@@ -1,0 +1,6 @@
+framework module Pods_cardLayout_cardLayoutUITests {
+  umbrella header "Pods-cardLayout-cardLayoutUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
