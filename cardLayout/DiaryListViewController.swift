@@ -138,37 +138,7 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
             
             if self.groupSortedDiary[indexPath.section].count > 0 {
                 let cell_obj = self.groupSortedDiary[indexPath.section][indexPath.row]
-                
-                let stringDate = cell_obj.date //"2020-10-06T00:03:22.303Z"
-                let locale = Locale(identifier: "en_US_POSIX")
-                let formatter = DateFormatter()
-                formatter.locale = locale
-                formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-                let date = formatter.date(from: stringDate)
-                
-                // "Jan 18, 2018 at 5:29 PM"
-                let relativeFormatter = Helper.buildFormatter(locale: locale, hasRelativeDate: true)
-                let relativeDateString = Helper.dateFormatterToString(relativeFormatter, date!)
-//                print(relativeDateString)
-                // "Jan 18, 2018"
-
-                let nonRelativeFormatter = Helper.buildFormatter(locale: locale)
-                let normalDateString = Helper.dateFormatterToString(nonRelativeFormatter, date!)
-//                print(normalDateString)
-                // "Jan 18, 2018"
-
-                let customFormatter = Helper.buildFormatter(locale: locale, dateFormat: "dd MMM")
-                let customDateString = Helper.dateFormatterToString(customFormatter, date!)
-                // "18 January"
-
-                if relativeDateString == normalDateString {
-//                    print("Use custom date \(customDateString)") // Jan 18
-                    headerView.lblDate.text = customDateString
-                } else {
-//                    print("Use relative date \(relativeDateString)") // Today, Yesterday
-                    headerView.lblDate.text = relativeDateString
-                }
-
+                headerView.configHeader(cell_obj)
             }
             return headerView
             
@@ -190,12 +160,7 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
         
         let cell_obj = self.groupSortedDiary[indexPath.section][indexPath.row]
 
-        cell.lblName.text = cell_obj.title
-        cell.lblDescription.text = cell_obj.content
-        
-        let date = Helper.stringToDate(strDate: cell_obj.date)
-        cell.lblTimeAgo.text = (date?.timeAgo())! + " ago"
-        cell.delpos = indexPath
+        cell.configCell(cell_obj)
         
         cell
             .btnDelete

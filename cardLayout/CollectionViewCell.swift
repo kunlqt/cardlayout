@@ -24,5 +24,13 @@ class CollectionViewCell: UICollectionViewCell {
         
         viewOut.translatesAutoresizingMaskIntoConstraints = false
         viewOut.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width - 50).isActive = true
-      }
+    }
+    
+    func configCell(_ diary: Diary) {
+        self.lblName.text = diary.title
+        self.lblDescription.text = diary.content
+        
+        let date = Helper.stringToDate(strDate: diary.date)
+        self.lblTimeAgo.text = (date?.timeAgo())! + " ago"
+    }
 }
