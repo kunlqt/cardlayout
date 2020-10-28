@@ -19,7 +19,7 @@
 		1EE085ED254826F5003A46AB /* NetworkReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE085EC254826F4003A46AB /* NetworkReachability.swift */; };
 		1EE085F625482BD5003A46AB /* Viewcontroller+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EE085F525482BD5003A46AB /* Viewcontroller+Extension.swift */; };
 		9040A6271FAE741200D89A53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9040A6261FAE741200D89A53 /* AppDelegate.swift */; };
-		9040A6291FAE741200D89A53 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9040A6281FAE741200D89A53 /* ViewController.swift */; };
+		9040A6291FAE741200D89A53 /* DiaryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9040A6281FAE741200D89A53 /* DiaryListViewController.swift */; };
 		9040A62C1FAE741200D89A53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9040A62A1FAE741200D89A53 /* Main.storyboard */; };
 		9040A62E1FAE741200D89A53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9040A62D1FAE741200D89A53 /* Assets.xcassets */; };
 		9040A6311FAE741200D89A53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9040A62F1FAE741200D89A53 /* LaunchScreen.storyboard */; };
@@ -64,7 +64,7 @@
 		8F7E7ADCFBDA5E071EC47346 /* Pods_cardLayout.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_cardLayout.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9040A6231FAE741200D89A53 /* cardLayout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cardLayout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9040A6261FAE741200D89A53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		9040A6281FAE741200D89A53 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		9040A6281FAE741200D89A53 /* DiaryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryListViewController.swift; sourceTree = "<group>"; };
 		9040A62B1FAE741200D89A53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9040A62D1FAE741200D89A53 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9040A6301FAE741200D89A53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -173,12 +173,12 @@
 				1E4F47C8252D8F3300378EAF /* CardView.swift */,
 				9040A6541FAE7A6600D89A53 /* CollectionViewCell.swift */,
 				1EE085E725480203003A46AB /* DiaryDetailViewController.swift */,
+				9040A6281FAE741200D89A53 /* DiaryListViewController.swift */,
 				9040A6321FAE741200D89A53 /* Info.plist */,
 				9040A62F1FAE741200D89A53 /* LaunchScreen.storyboard */,
 				9040A62A1FAE741200D89A53 /* Main.storyboard */,
 				1E4F47C1252D7B0C00378EAF /* MyHeaderFooterClass.swift */,
 				1E4F47C2252D7B0C00378EAF /* MyHeaderFooterClass.xib */,
-				9040A6281FAE741200D89A53 /* ViewController.swift */,
 			);
 			path = cardLayout;
 			sourceTree = "<group>";
@@ -481,7 +481,7 @@
 			files = (
 				1E4F47C3252D7B0C00378EAF /* MyHeaderFooterClass.swift in Sources */,
 				1EE085E825480203003A46AB /* DiaryDetailViewController.swift in Sources */,
-				9040A6291FAE741200D89A53 /* ViewController.swift in Sources */,
+				9040A6291FAE741200D89A53 /* DiaryListViewController.swift in Sources */,
 				9040A6271FAE741200D89A53 /* AppDelegate.swift in Sources */,
 				9040A6551FAE7A6600D89A53 /* CollectionViewCell.swift in Sources */,
 				1EE085D12547EA80003A46AB /* Diary.swift in Sources */,
