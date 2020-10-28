@@ -2,7 +2,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, CollectionViewCellDelegate {
+class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
 
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -15,6 +15,8 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
     
     let collectionViewHeaderFooterReuseIdentifier = "MyHeaderFooterClass"
 
+    var deleteDiarySubject = PublishSubject<IndexPath>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
          collectionView.register(UINib(nibName: collectionViewHeaderFooterReuseIdentifier, bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier:collectionViewHeaderFooterReuseIdentifier)
@@ -38,6 +40,12 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
             userDefaults.set(false, forKey: "FirstTime")
             userDefaults.synchronize()
         }
+        
+        deleteDiarySubject
+            .subscribe(onNext: { [weak self] indexPath in
+                self?.removeDiary(at: indexPath)
+            })
+            .disposed(by: bag)
       }
     
     func saveLocal() {
@@ -163,13 +171,7 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
 
             }
             return headerView
-                
-        case UICollectionElementKindSectionFooter:
-            let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: collectionViewHeaderFooterReuseIdentifier, for: indexPath)
-
-            footerView.backgroundColor = UIColor.green
-            return footerView
-
+            
         default:
             assert(false, "Unexpected element kind")
         }
@@ -194,56 +196,63 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
         let date = Helper.stringToDate(strDate: cell_obj.date)
         cell.lblTimeAgo.text = (date?.timeAgo())! + " ago"
         cell.delpos = indexPath
-        cell.delegate = self
-        cell.btnDelete?.tag = indexPath.row
+        
+        cell
+            .btnDelete
+            .rx
+            .tap
+            .map { indexPath }
+            .bind(to: deleteDiarySubject)
+            .disposed(by: cell.disposeBag)
 
+        cell
+            .btnEdit
+            .rx
+            .tap
+            .subscribe(onNext: { [weak self] in
+                self?.showDetailDiary(indexPath)
+            })
+            .disposed(by: cell.disposeBag)
+        
         return cell
     }
     
-    //MARK:- Diary delegate
-    func collectionViewCell(_ collectionViewCell: CollectionViewCell, btnDeleteTappedFor delpos: IndexPath) {
-        if self.groupSortedDiary[delpos.section].count > 1{
-            self.groupSortedDiary[delpos.section].remove(at: delpos.row)
+    private func removeDiary(at indexPath: IndexPath) {
+        if self.groupSortedDiary[indexPath.section].count > 1{
+            self.groupSortedDiary[indexPath.section].remove(at: indexPath.row)
             
         }else{
-            self.groupSortedDiary[delpos.section].remove(at: delpos.row)
-            self.groupSortedDiary.remove(at: delpos.section)
+            self.groupSortedDiary[indexPath.section].remove(at: indexPath.row)
+            self.groupSortedDiary.remove(at: indexPath.section)
         }
         self.collectionView.reloadData()
         saveLocal()
     }
     
-    func collectionViewCell(_ collectionViewCell: CollectionViewCell, btnEditTappedFor delpos: IndexPath) {        
-        diaryEditedIndexPath = delpos
-        performSegue(withIdentifier: "EditDiary", sender: delpos)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "EditDiary" {
-            let controller = segue.destination as? DiaryDetailViewController
-            if let indexPath = sender as? IndexPath {
-                let section = groupSortedDiary[indexPath.section]
-                let diary = section[indexPath.row]
-                controller?.diary = diary
-            }
-            
-            controller?.savedDiary
-              .subscribe(
-                onNext: { [weak self] editDiary in
-                    if let indexPath = self?.diaryEditedIndexPath{
-                        self?.groupSortedDiary[indexPath.section][indexPath.row] = editDiary
-                        self?.collectionView.reloadData()
-                        self?.saveLocal()
-                    }
-                    
-                    self?.navigationController?.popViewController(animated: true)
-                },
-                onDisposed: {
-                  print("completed diary")
-                }
-              )
-              .disposed(by: bag)
+    func showDetailDiary(_ indexPath: IndexPath) {
+        guard let diaryDetailViewController = AppDelegate.storyBoard.instantiateViewController(withIdentifier: "DiaryDetailViewController") as? DiaryDetailViewController else {
+            fatalError("These is no controller")
         }
+                
+        let diary = groupSortedDiary[indexPath.section][indexPath.row]
+        diaryDetailViewController.diary = diary
+
+        diaryDetailViewController.savedDiary
+          .subscribe(
+            onNext: { [weak self] editDiary in
+                self?.groupSortedDiary[indexPath.section][indexPath.row] = editDiary
+                self?.collectionView.reloadData()
+                self?.saveLocal()
+                
+                self?.navigationController?.popViewController(animated: true)
+            },
+            onDisposed: {
+              print("completed diary")
+            }
+          )
+          .disposed(by: bag)
+        
+        navigationController?.pushViewController(diaryDetailViewController, animated: true)
     }
 }
 

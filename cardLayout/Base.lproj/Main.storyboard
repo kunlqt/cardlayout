@@ -191,7 +191,7 @@
         <!--Diary Title-->
         <scene sceneID="YbR-0i-u3b">
             <objects>
-                <viewController id="fR7-fN-X7a" customClass="DiaryDetailViewController" customModule="cardLayout" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DiaryDetailViewController" id="fR7-fN-X7a" customClass="DiaryDetailViewController" customModule="cardLayout" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="GfW-Th-DsA">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
