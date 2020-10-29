@@ -20,13 +20,13 @@ class MyHeaderFooterClass: UICollectionReusableView {
 
      }
     
-    func configHeader(_ diary: Diary) {
-        let stringDate = diary.date //"2020-10-06T00:03:22.303Z"
+    func configHeader(_ date: String) {
+        //"2020-10-06T00:03:22.303Z"
         let locale = Locale(identifier: "en_US_POSIX")
         let formatter = DateFormatter()
         formatter.locale = locale
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-        let date = formatter.date(from: stringDate)
+        let date = formatter.date(from: date)
         
         // "Jan 18, 2018 at 5:29 PM"
         let relativeFormatter = Helper.buildFormatter(locale: locale, hasRelativeDate: true)

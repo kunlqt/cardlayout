@@ -88,8 +88,8 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
     
     func processDiaries(_ newDiaries: [Diary]) {
       var updatedDiaries = newDiaries + diaries.value
-      if updatedDiaries.count > 50 {
-        updatedDiaries = [Diary](updatedDiaries.prefix(upTo: 50))
+      if updatedDiaries.count > 16 {
+        updatedDiaries = [Diary](updatedDiaries.prefix(upTo: 16))
       }
 
       diaries.accept(updatedDiaries)
@@ -122,7 +122,7 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
             
             if self.groupSortedDiary[indexPath.section].count > 0 {
                 let cell_obj = self.groupSortedDiary[indexPath.section][indexPath.row]
-                headerView.configHeader(cell_obj)
+                headerView.configHeader(cell_obj.date)
             }
             return headerView
             
