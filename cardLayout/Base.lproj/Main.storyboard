@@ -148,10 +148,6 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </collectionReusableView>
-                                <connections>
-                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="tjV-CD-f92"/>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="b8D-AE-v2L"/>
-                                </connections>
                             </collectionView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

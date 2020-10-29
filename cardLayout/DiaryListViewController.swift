@@ -1,6 +1,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import RxDataSources
 
 class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
 
@@ -15,6 +16,24 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
     let collectionViewHeaderFooterReuseIdentifier = "MyHeaderFooterClass"
     var groupSortedDiary = [[Diary]]()
     
+    var dataSource: RxCollectionViewSectionedReloadDataSource<DiarySection>!
+    
+    func transformToDiarySection(diaries: [Diary]) -> Observable<[DiarySection]> {
+        return Observable<[DiarySection]>.create { observer in
+            let dayDiaries = Array(Set(diaries.compactMap { $0.dayDate }))
+            var diariesManage = dayDiaries.compactMap { day -> DiarySection in
+                let diariesDay = diaries.filter { $0.dayDate == day }
+                return DiarySection(items: diariesDay)
+            }
+            
+            diariesManage.sort(by: { Helper.stringToDate(strDate: $0.diaryDate ?? "") ?? Date() > Helper.stringToDate(strDate: $1.diaryDate ?? "") ?? Date() })
+            
+            observer.onNext(diariesManage)
+            
+            return Disposables.create()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
          collectionView.register(UINib(nibName: collectionViewHeaderFooterReuseIdentifier, bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier:collectionViewHeaderFooterReuseIdentifier)
@@ -23,12 +42,46 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
                 flowLayout.estimatedItemSize = UICollectionViewFlowLayoutAutomaticSize
             }
         
+//        collectionView
+//            .rx
+//            .setDelegate(self)
+//            .disposed(by: bag)
+        
+        dataSource = RxCollectionViewSectionedReloadDataSource<DiarySection>(
+          configureCell: { dataSource, tableView, indexPath, item in
+            let cell = tableView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CollectionViewCell
+            cell.configCell(item)
+            cell.btnDelete
+                .rx
+                .tap
+                .map { indexPath }
+                .bind(to: self.deleteDiarySubject)
+                .disposed(by: cell.disposeBag)
+
+            cell.btnEdit
+                .rx
+                .tap
+                .subscribe(onNext: { [weak self] in
+                    self?.showDetailDiary(indexPath)
+                })
+                .disposed(by: cell.disposeBag)
+            return cell
+          },
+            configureSupplementaryView: {(dataSource, collectionView, kind, indexPath) -> UICollectionReusableView in
+                let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.collectionViewHeaderFooterReuseIdentifier, for: indexPath) as! MyHeaderFooterClass
+                header.configHeader(dataSource[indexPath.section].diaryDate ?? "")
+                    return header
+                })
+        
         let decoder = JSONDecoder()
         if let diariesData = try? Data(contentsOf: diaryFileURL),
           let persistedDiaries = try? decoder.decode([Diary].self, from: diariesData) {
             diaries.accept(persistedDiaries)
             groupSortList()
+            bindDatasourceToCollectionView()
         }
+        
+        
         
         let userDefaults = UserDefaults.standard
         let firstTime = userDefaults.bool(forKey: "FirstTime")
@@ -38,7 +91,7 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
             userDefaults.set(false, forKey: "FirstTime")
             userDefaults.synchronize()
         }
-        
+
         deleteDiarySubject
             .subscribe(onNext: { [weak self] indexPath in
                 self?.deleteDiary(at: indexPath)
@@ -88,15 +141,17 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
     
     func processDiaries(_ newDiaries: [Diary]) {
       var updatedDiaries = newDiaries + diaries.value
-      if updatedDiaries.count > 50 {
-        updatedDiaries = [Diary](updatedDiaries.prefix(upTo: 50))
+      if updatedDiaries.count > 16 {
+        updatedDiaries = [Diary](updatedDiaries.prefix(upTo: 16))
       }
 
       diaries.accept(updatedDiaries)
     
+        
       groupSortList()
         
       DispatchQueue.main.async {
+        self.bindDatasourceToCollectionView()
         self.collectionView.reloadData()
       }
 
@@ -114,7 +169,7 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
-
+        print("dataSource[indexPath.section].diaryDate==")
         switch kind {
 
         case UICollectionElementKindSectionHeader:
@@ -122,7 +177,9 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
             
             if self.groupSortedDiary[indexPath.section].count > 0 {
                 let cell_obj = self.groupSortedDiary[indexPath.section][indexPath.row]
-                headerView.configHeader(cell_obj)
+                headerView.configHeader(cell_obj.date)
+//                print("dataSource[indexPath.section].diaryDate==\(dataSource[indexPath.section].diaryDate)")
+//                headerView.configHeader(dataSource[indexPath.section].diaryDate ?? "")
             }
             return headerView
             
@@ -212,6 +269,14 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
             let date = Helper.stringToDate(strDate: $0.date)
             return date!
         })
+    }
+    
+    func bindDatasourceToCollectionView(){
+        let sections = self.transformToDiarySection(diaries: self.diaries.value)
+        print(sections)
+        sections
+            .bind(to: self.collectionView.rx.items(dataSource: self.dataSource))
+            .disposed(by: self.bag)
     }
 }
 

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1E196682254A7125003A23A0 /* DiarySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E196681254A7125003A23A0 /* DiarySection.swift */; };
+		1E196690254A9D3C003A23A0 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E19668F254A9D3C003A23A0 /* String+Extension.swift */; };
 		1E28B11425491CBA00EE5DE6 /* sequence+sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E28B11325491CBA00EE5DE6 /* sequence+sort.swift */; };
 		1E41EDF12A2E897686EF0CB3 /* Pods_cardLayoutTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E1AFA5913AC0629F3E7701 /* Pods_cardLayoutTests.framework */; };
 		1E4F47C3252D7B0C00378EAF /* MyHeaderFooterClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E4F47C1252D7B0C00378EAF /* MyHeaderFooterClass.swift */; };
@@ -48,6 +50,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1E196681254A7125003A23A0 /* DiarySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarySection.swift; sourceTree = "<group>"; };
+		1E19668F254A9D3C003A23A0 /* String+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		1E28B11325491CBA00EE5DE6 /* sequence+sort.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "sequence+sort.swift"; sourceTree = "<group>"; };
 		1E4F47C1252D7B0C00378EAF /* MyHeaderFooterClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyHeaderFooterClass.swift; sourceTree = "<group>"; };
 		1E4F47C2252D7B0C00378EAF /* MyHeaderFooterClass.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MyHeaderFooterClass.xib; sourceTree = "<group>"; };
@@ -115,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				1EE085D02547EA80003A46AB /* Diary.swift */,
+				1E196681254A7125003A23A0 /* DiarySection.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -122,6 +127,7 @@
 		1EE085F425482BAA003A46AB /* extension */ = {
 			isa = PBXGroup;
 			children = (
+				1E19668F254A9D3C003A23A0 /* String+Extension.swift */,
 				1E28B11325491CBA00EE5DE6 /* sequence+sort.swift */,
 				1EE085CA2547DDAA003A46AB /* Date+Extension.swift */,
 				1EE085F525482BD5003A46AB /* Viewcontroller+Extension.swift */,
@@ -380,20 +386,22 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-cardLayout/Pods-cardLayout-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAlamofire/RxAlamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
 				"${BUILT_PRODUCTS_DIR}/RxRelay/RxRelay.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAlamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxRelay.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -452,20 +460,22 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-cardLayout-cardLayoutUITests/Pods-cardLayout-cardLayoutUITests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
 				"${BUILT_PRODUCTS_DIR}/RxAlamofire/RxAlamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
 				"${BUILT_PRODUCTS_DIR}/RxRelay/RxRelay.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxAlamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxRelay.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -486,6 +496,8 @@
 				9040A6551FAE7A6600D89A53 /* CollectionViewCell.swift in Sources */,
 				1EE085D12547EA80003A46AB /* Diary.swift in Sources */,
 				1E28B11425491CBA00EE5DE6 /* sequence+sort.swift in Sources */,
+				1E196682254A7125003A23A0 /* DiarySection.swift in Sources */,
+				1E196690254A9D3C003A23A0 /* String+Extension.swift in Sources */,
 				1EE085CB2547DDAA003A46AB /* Date+Extension.swift in Sources */,
 				1E4F47C9252D8F3300378EAF /* CardView.swift in Sources */,
 				1EE085ED254826F5003A46AB /* NetworkReachability.swift in Sources */,
