@@ -6,16 +6,14 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
 
     @IBOutlet weak var collectionView: UICollectionView!
     
-    private let diaries = BehaviorRelay<[Diary]>(value: [])
-    var groupSortedDiary = [[Diary]]()
     private let bag = DisposeBag()
+    private let diaries = BehaviorRelay<[Diary]>(value: [])
+    var deleteDiarySubject = PublishSubject<IndexPath>()
+    
     private let base_url = "https://private-ba0842-gary23.apiary-mock.com/notes"
     private let diaryFileURL = Helper.cachedFileURL("diaries.json")
-    var diaryEditedIndexPath: IndexPath?
-    
     let collectionViewHeaderFooterReuseIdentifier = "MyHeaderFooterClass"
-
-    var deleteDiarySubject = PublishSubject<IndexPath>()
+    var groupSortedDiary = [[Diary]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,25 +41,11 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
         
         deleteDiarySubject
             .subscribe(onNext: { [weak self] indexPath in
-                self?.removeDiary(at: indexPath)
+                self?.deleteDiary(at: indexPath)
             })
             .disposed(by: bag)
       }
     
-    func saveLocal() {
-        let flattened = self.groupSortedDiary.flatMap { $0 }
-        let encoder = JSONEncoder()
-        if let eventsData = try? encoder.encode(flattened) {
-          try? eventsData.write(to: diaryFileURL, options: .atomicWrite)
-        }
-    }
-    
-    func groupSortList() {
-        groupSortedDiary = diaries.value.groupSort(ascending: false, byDate: {
-            let date = Helper.stringToDate(strDate: $0.date)
-            return date!
-        })
-    }
     @objc func refresh() {
       DispatchQueue.global(qos: .default).async { [weak self] in
         guard let self = self else { return }
@@ -146,10 +130,6 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
             assert(false, "Unexpected element kind")
         }
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-            return CGSize(width: collectionView.frame.width, height: 60.0)
-    }
         
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.groupSortedDiary[section].count
@@ -162,16 +142,14 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
 
         cell.configCell(cell_obj)
         
-        cell
-            .btnDelete
+        cell.btnDelete
             .rx
             .tap
             .map { indexPath }
             .bind(to: deleteDiarySubject)
             .disposed(by: cell.disposeBag)
 
-        cell
-            .btnEdit
+        cell.btnEdit
             .rx
             .tap
             .subscribe(onNext: { [weak self] in
@@ -182,7 +160,8 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
         return cell
     }
     
-    private func removeDiary(at indexPath: IndexPath) {
+    // MARK: delete diary, show detail diary and helper
+    private func deleteDiary(at indexPath: IndexPath) {
         if self.groupSortedDiary[indexPath.section].count > 1{
             self.groupSortedDiary[indexPath.section].remove(at: indexPath.row)
             
@@ -196,7 +175,7 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
     
     func showDetailDiary(_ indexPath: IndexPath) {
         guard let diaryDetailViewController = AppDelegate.storyBoard.instantiateViewController(withIdentifier: "DiaryDetailViewController") as? DiaryDetailViewController else {
-            fatalError("These is no controller")
+            fatalError("No viewcontroller")
         }
                 
         let diary = groupSortedDiary[indexPath.section][indexPath.row]
@@ -218,6 +197,21 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
           .disposed(by: bag)
         
         navigationController?.pushViewController(diaryDetailViewController, animated: true)
+    }
+    
+    func saveLocal() {
+        let flattened = self.groupSortedDiary.flatMap { $0 }
+        let encoder = JSONEncoder()
+        if let eventsData = try? encoder.encode(flattened) {
+          try? eventsData.write(to: diaryFileURL, options: .atomicWrite)
+        }
+    }
+    
+    func groupSortList() {
+        groupSortedDiary = diaries.value.groupSort(ascending: false, byDate: {
+            let date = Helper.stringToDate(strDate: $0.date)
+            return date!
+        })
     }
 }
 

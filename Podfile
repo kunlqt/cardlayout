@@ -9,7 +9,7 @@ target 'cardLayout' do
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'RxAlamofire'
-  pod 'SwiftyJSON'
+  pod 'RxDataSources', '~> 4.0'
   target 'cardLayoutTests' do
     inherit! :search_paths
     # Pods for testing
