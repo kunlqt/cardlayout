@@ -3,7 +3,7 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class DiaryListViewController: UIViewController{
 
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -81,8 +81,6 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
             bindDatasourceToCollectionView()
         }
         
-        
-        
         let userDefaults = UserDefaults.standard
         let firstTime = userDefaults.bool(forKey: "FirstTime")
         
@@ -146,8 +144,7 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
       }
 
       diaries.accept(updatedDiaries)
-    
-        
+            
       groupSortList()
         
       DispatchQueue.main.async {
@@ -159,62 +156,6 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
       if let diariesData = try? encoder.encode(updatedDiaries) {
         try? diariesData.write(to: diaryFileURL, options: .atomicWrite)
       }
-    }
-    
-    // MARK: CollectionView Delegate
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return groupSortedDiary.count
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
-        print("dataSource[indexPath.section].diaryDate==")
-        switch kind {
-
-        case UICollectionElementKindSectionHeader:
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: collectionViewHeaderFooterReuseIdentifier, for: indexPath) as! MyHeaderFooterClass
-            
-            if self.groupSortedDiary[indexPath.section].count > 0 {
-                let cell_obj = self.groupSortedDiary[indexPath.section][indexPath.row]
-                headerView.configHeader(cell_obj.date)
-//                print("dataSource[indexPath.section].diaryDate==\(dataSource[indexPath.section].diaryDate)")
-//                headerView.configHeader(dataSource[indexPath.section].diaryDate ?? "")
-            }
-            return headerView
-            
-        default:
-            assert(false, "Unexpected element kind")
-        }
-    }
-        
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.groupSortedDiary[section].count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CollectionViewCell
-        
-        let cell_obj = self.groupSortedDiary[indexPath.section][indexPath.row]
-
-        cell.configCell(cell_obj)
-        
-        cell.btnDelete
-            .rx
-            .tap
-            .map { indexPath }
-            .bind(to: deleteDiarySubject)
-            .disposed(by: cell.disposeBag)
-
-        cell.btnEdit
-            .rx
-            .tap
-            .subscribe(onNext: { [weak self] in
-                self?.showDetailDiary(indexPath)
-            })
-            .disposed(by: cell.disposeBag)
-        
-        return cell
     }
     
     // MARK: delete diary, show detail diary and helper
@@ -273,7 +214,6 @@ class DiaryListViewController: UIViewController, UICollectionViewDelegate, UICol
     
     func bindDatasourceToCollectionView(){
         let sections = self.transformToDiarySection(diaries: self.diaries.value)
-        print(sections)
         sections
             .bind(to: self.collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: self.bag)
