@@ -17,6 +17,17 @@ class Helper{
         return formatter.string(from: date)
     }
     
+    static func stringDateToDay(_ strDate: String) -> String {
+//        let dateString = "2020-05-28T00:03:23.303Z"
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        guard let date = formatter.date(from: strDate) else { return "" }
+
+        formatter.dateFormat = "yyyy-MM-dd"
+        let day = formatter.string(from: date)
+        return day
+    }
+    
     static func stringToDate(strDate: String) -> Date? {
         let locale = Locale(identifier: "en_US_POSIX")
         let formatter = DateFormatter()

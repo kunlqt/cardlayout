@@ -12,73 +12,60 @@ class DiaryListViewController: UIViewController{
     var deleteDiarySubject = PublishSubject<IndexPath>()
     
     private let base_url = "https://private-ba0842-gary23.apiary-mock.com/notes"
+    private let path = "notes"
     private let diaryFileURL = Helper.cachedFileURL("diaries.json")
     let collectionViewHeaderFooterReuseIdentifier = "MyHeaderFooterClass"
-    var groupSortedDiary = [[Diary]]()
     
     var dataSource: RxCollectionViewSectionedReloadDataSource<DiarySection>!
-    var diariesSection: BehaviorSubject<[DiarySection]> = BehaviorSubject(value: [])
+    var diariesSectionSubject: BehaviorSubject<[DiarySection]> = BehaviorSubject(value: [])
     
-    func transformToDiarySection(diaries: [Diary]) -> Observable<[DiarySection]> {
-        return Observable<[DiarySection]>.create { observer in
-            let dayDiaries = Array(Set(diaries.compactMap { $0.dayDate }))
-            var diariesManage = dayDiaries.compactMap { day -> DiarySection in
-                let diariesDay = diaries.filter { $0.dayDate == day }
-                return DiarySection(items: diariesDay)
-            }
-            
-            diariesManage.sort(by: { Helper.stringToDate(strDate: $0.diaryDate ?? "") ?? Date() > Helper.stringToDate(strDate: $1.diaryDate ?? "") ?? Date() })
-            
-            observer.onNext(diariesManage)
-            
-            return Disposables.create()
+    func configureCollectionView(){
+        collectionView.register(UINib(nibName: collectionViewHeaderFooterReuseIdentifier, bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier:collectionViewHeaderFooterReuseIdentifier)
+       
+        if let flowLayout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
+            flowLayout.estimatedItemSize = UICollectionViewFlowLayoutAutomaticSize
         }
+    }
+    
+    func configureDatasource(){
+        dataSource = RxCollectionViewSectionedReloadDataSource<DiarySection>(
+          configureCell: { dataSource, tableView, indexPath, item in
+                let cell = tableView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CollectionViewCell
+                cell.configCell(item)
+                cell.btnDelete
+                    .rx
+                    .tap
+                    .map { indexPath }
+                    .bind(to: self.deleteDiarySubject)
+                    .disposed(by: cell.disposeBag)
+
+                cell.btnEdit
+                    .rx
+                    .tap
+                    .subscribe(onNext: { [weak self] in
+                        self?.showDetailDiary(indexPath)
+                    })
+                    .disposed(by: cell.disposeBag)
+                return cell
+          },
+          configureSupplementaryView: {(dataSource, collectionView, kind, indexPath) -> UICollectionReusableView in
+                let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.collectionViewHeaderFooterReuseIdentifier, for: indexPath) as! MyHeaderFooterClass
+                header.configHeader(dataSource[indexPath.section].firstDateDiary ?? "")
+                    return header
+          })
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-         collectionView.register(UINib(nibName: collectionViewHeaderFooterReuseIdentifier, bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier:collectionViewHeaderFooterReuseIdentifier)
         
-        if let flowLayout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
-                flowLayout.estimatedItemSize = UICollectionViewFlowLayoutAutomaticSize
-            }
+        configureCollectionView()
         
-//        collectionView
-//            .rx
-//            .setDelegate(self)
-//            .disposed(by: bag)
-        
-        dataSource = RxCollectionViewSectionedReloadDataSource<DiarySection>(
-          configureCell: { dataSource, tableView, indexPath, item in
-            let cell = tableView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CollectionViewCell
-            cell.configCell(item)
-            cell.btnDelete
-                .rx
-                .tap
-                .map { indexPath }
-                .bind(to: self.deleteDiarySubject)
-                .disposed(by: cell.disposeBag)
-
-            cell.btnEdit
-                .rx
-                .tap
-                .subscribe(onNext: { [weak self] in
-                    self?.showDetailDiary(indexPath)
-                })
-                .disposed(by: cell.disposeBag)
-            return cell
-          },
-            configureSupplementaryView: {(dataSource, collectionView, kind, indexPath) -> UICollectionReusableView in
-                let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: self.collectionViewHeaderFooterReuseIdentifier, for: indexPath) as! MyHeaderFooterClass
-                header.configHeader(dataSource[indexPath.section].diaryDate ?? "")
-                    return header
-                })
+        configureDatasource()
         
         let decoder = JSONDecoder()
         if let diariesData = try? Data(contentsOf: diaryFileURL),
           let persistedDiaries = try? decoder.decode([Diary].self, from: diariesData) {
             diaries.accept(persistedDiaries)
-            groupSortList()
             bindDatasourceToCollectionView()
         }
         
@@ -159,36 +146,35 @@ class DiaryListViewController: UIViewController{
     
     // MARK: delete diary, show detail diary and helper
     private func deleteDiary(at indexPath: IndexPath) {
-        guard var diariesSection = try? self.diariesSection.value() else { return }
+        guard var diariesSectionList = try? self.diariesSectionSubject.value() else { return }
         
-        if diariesSection[indexPath.section].items.count > 1{
-            diariesSection[indexPath.section].items.remove(at: indexPath.row)
+        if diariesSectionList[indexPath.section].items.count > 1{
+            diariesSectionList[indexPath.section].items.remove(at: indexPath.row)
             
         }else{
-            diariesSection[indexPath.section].items.remove(at: indexPath.row)
-            diariesSection.remove(at: indexPath.section)
+            diariesSectionList[indexPath.section].items.remove(at: indexPath.row)
+            diariesSectionList.remove(at: indexPath.section)
         }
-        self.diariesSection.onNext(diariesSection)
-        saveDataLocal(diariesSection)
+        self.diariesSectionSubject.onNext(diariesSectionList)
+        saveDataLocal(diariesSectionList)
     }
     
     func showDetailDiary(_ indexPath: IndexPath) {
         guard let diaryDetailViewController = AppDelegate.storyBoard.instantiateViewController(withIdentifier: "DiaryDetailViewController") as? DiaryDetailViewController else {
             fatalError("No viewcontroller")
         }
-        guard var diariesSection = try? self.diariesSection.value() else { return }
-        let diary = diariesSection[indexPath.section].items[indexPath.row]
+        guard var diariesSectionList = try? self.diariesSectionSubject.value() else { return }
+        let diary = diariesSectionList[indexPath.section].items[indexPath.row]
         diaryDetailViewController.diary = diary
 
         diaryDetailViewController.savedDiary
           .subscribe(
             onNext: { [weak self] editDiary in
-                print("diariesSection sections=\(diariesSection.count)")
-                diariesSection[indexPath.section].items.remove(at: indexPath.row)
-                diariesSection[indexPath.section].items.insert(editDiary, at: indexPath.row)
-                self?.diariesSection.onNext(diariesSection)
+                diariesSectionList[indexPath.section].items.remove(at: indexPath.row)
+                diariesSectionList[indexPath.section].items.insert(editDiary, at: indexPath.row)
+                self?.diariesSectionSubject.onNext(diariesSectionList)
                 
-                self?.saveDataLocal(diariesSection)
+                self?.saveDataLocal(diariesSectionList)
                 
                 self?.navigationController?.popViewController(animated: true)
             },
@@ -215,23 +201,32 @@ class DiaryListViewController: UIViewController{
         }
     }
     
-    func groupSortList() {
-        groupSortedDiary = diaries.value.groupSort(ascending: false, byDate: {
-            let date = Helper.stringToDate(strDate: $0.date)
-            return date!
-        })
+    func diaryToDiarySection(diaries: [Diary]) -> Observable<[DiarySection]> {
+        return Observable<[DiarySection]>.create { observer in
+            let dayUnique = Array(Set(diaries.compactMap { Helper.stringDateToDay($0.date) }))
+            var diariesSectionList = dayUnique.compactMap { day -> DiarySection in
+                let diariesDay = diaries.filter { Helper.stringDateToDay($0.date) == day }
+                return DiarySection(items: diariesDay.sorted(by: { $0.date > $1.date }))
+            }
+            diariesSectionList.sort(by: {Helper.stringToDate(strDate: $0.firstDateDiary ?? "") ?? Date() > Helper.stringToDate(strDate: $1.firstDateDiary ?? "") ?? Date() })
+            
+            observer.onNext(diariesSectionList)
+            
+            return Disposables.create()
+        }
     }
     
     func bindDatasourceToCollectionView(){
-        let sections = self.transformToDiarySection(diaries: self.diaries.value)
+        let sections = self.diaryToDiarySection(diaries: self.diaries.value)
         
-        sections.bind(to: self.diariesSection)
+        sections.bind(to: self.diariesSectionSubject)
                 .disposed(by: bag)
         
-        self.diariesSection
-            .debug()
-            .asDriver(onErrorJustReturn: [])
-            .drive(collectionView.rx.items(dataSource: self.dataSource))
+//        sections.bind(to: collectionView.rx.items(dataSource: self.dataSource))
+//                .disposed(by: self.bag)
+        
+        self.diariesSectionSubject
+            .bind(to: collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: self.bag)
     }
 }

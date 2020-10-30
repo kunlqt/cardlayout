@@ -15,7 +15,7 @@ struct DiarySection: SectionModelType {
     
     var items: [Diary]
     
-    var diaryDate: String? {
+    var firstDateDiary: String? {
         return items.first?.date
     }
 }
