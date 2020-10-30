@@ -111,6 +111,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E5024D0254C0B8200F3FD13 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				1E6893642549054C002D35AD /* Helper.swift */,
+				1EE085EC254826F4003A46AB /* NetworkReachability.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		1E5024D7254C183100F3FD13 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				9040A6261FAE741200D89A53 /* AppDelegate.swift */,
+				9040A62D1FAE741200D89A53 /* Assets.xcassets */,
+				9040A6321FAE741200D89A53 /* Info.plist */,
+				9040A62A1FAE741200D89A53 /* Main.storyboard */,
+				9040A62F1FAE741200D89A53 /* LaunchScreen.storyboard */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		1EE085CF2547EA70003A46AB /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,13 +141,13 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		1EE085F425482BAA003A46AB /* extension */ = {
+		1EE085F425482BAA003A46AB /* Extension */ = {
 			isa = PBXGroup;
 			children = (
 				1EE085CA2547DDAA003A46AB /* Date+Extension.swift */,
 				1EE085F525482BD5003A46AB /* Viewcontroller+Extension.swift */,
 			);
-			path = extension;
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		8E8B7389B001AB73AD7D96B1 /* Frameworks */ = {
@@ -164,19 +185,14 @@
 		9040A6251FAE741200D89A53 /* cardLayout */ = {
 			isa = PBXGroup;
 			children = (
-				1EE085F425482BAA003A46AB /* extension */,
+				1E5024D7254C183100F3FD13 /* Resources */,
+				1E5024D0254C0B8200F3FD13 /* Util */,
+				1EE085F425482BAA003A46AB /* Extension */,
 				1EE085CF2547EA70003A46AB /* Model */,
-				9040A6261FAE741200D89A53 /* AppDelegate.swift */,
-				9040A62D1FAE741200D89A53 /* Assets.xcassets */,
-				1E6893642549054C002D35AD /* Helper.swift */,
-				1EE085EC254826F4003A46AB /* NetworkReachability.swift */,
 				1E4F47C8252D8F3300378EAF /* CardView.swift */,
 				9040A6541FAE7A6600D89A53 /* CollectionViewCell.swift */,
 				1EE085E725480203003A46AB /* DiaryDetailViewController.swift */,
 				9040A6281FAE741200D89A53 /* DiaryListViewController.swift */,
-				9040A6321FAE741200D89A53 /* Info.plist */,
-				9040A62F1FAE741200D89A53 /* LaunchScreen.storyboard */,
-				9040A62A1FAE741200D89A53 /* Main.storyboard */,
 				1E4F47C1252D7B0C00378EAF /* MyHeaderFooterClass.swift */,
 				1E4F47C2252D7B0C00378EAF /* MyHeaderFooterClass.xib */,
 			);
@@ -664,7 +680,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Q9QXT58ZJ6;
-				INFOPLIST_FILE = cardLayout/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/cardLayout/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kunlqt.cardLayout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -681,7 +697,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Q9QXT58ZJ6;
-				INFOPLIST_FILE = cardLayout/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/cardLayout/Resources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kunlqt.cardLayout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
