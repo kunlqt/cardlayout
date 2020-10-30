@@ -17,6 +17,7 @@ class DiaryListViewController: UIViewController{
     var groupSortedDiary = [[Diary]]()
     
     var dataSource: RxCollectionViewSectionedReloadDataSource<DiarySection>!
+    var diariesSection: BehaviorSubject<[DiarySection]> = BehaviorSubject(value: [])
     
     func transformToDiarySection(diaries: [Diary]) -> Observable<[DiarySection]> {
         return Observable<[DiarySection]>.create { observer in
@@ -144,9 +145,7 @@ class DiaryListViewController: UIViewController{
       }
 
       diaries.accept(updatedDiaries)
-            
-      groupSortList()
-        
+                    
       DispatchQueue.main.async {
         self.bindDatasourceToCollectionView()
         self.collectionView.reloadData()
@@ -160,31 +159,36 @@ class DiaryListViewController: UIViewController{
     
     // MARK: delete diary, show detail diary and helper
     private func deleteDiary(at indexPath: IndexPath) {
-        if self.groupSortedDiary[indexPath.section].count > 1{
-            self.groupSortedDiary[indexPath.section].remove(at: indexPath.row)
+        guard var diariesSection = try? self.diariesSection.value() else { return }
+        
+        if diariesSection[indexPath.section].items.count > 1{
+            diariesSection[indexPath.section].items.remove(at: indexPath.row)
             
         }else{
-            self.groupSortedDiary[indexPath.section].remove(at: indexPath.row)
-            self.groupSortedDiary.remove(at: indexPath.section)
+            diariesSection[indexPath.section].items.remove(at: indexPath.row)
+            diariesSection.remove(at: indexPath.section)
         }
-        self.collectionView.reloadData()
-        saveLocal()
+        self.diariesSection.onNext(diariesSection)
+        saveDataLocal(diariesSection)
     }
     
     func showDetailDiary(_ indexPath: IndexPath) {
         guard let diaryDetailViewController = AppDelegate.storyBoard.instantiateViewController(withIdentifier: "DiaryDetailViewController") as? DiaryDetailViewController else {
             fatalError("No viewcontroller")
         }
-                
-        let diary = groupSortedDiary[indexPath.section][indexPath.row]
+        guard var diariesSection = try? self.diariesSection.value() else { return }
+        let diary = diariesSection[indexPath.section].items[indexPath.row]
         diaryDetailViewController.diary = diary
 
         diaryDetailViewController.savedDiary
           .subscribe(
             onNext: { [weak self] editDiary in
-                self?.groupSortedDiary[indexPath.section][indexPath.row] = editDiary
-                self?.collectionView.reloadData()
-                self?.saveLocal()
+                print("diariesSection sections=\(diariesSection.count)")
+                diariesSection[indexPath.section].items.remove(at: indexPath.row)
+                diariesSection[indexPath.section].items.insert(editDiary, at: indexPath.row)
+                self?.diariesSection.onNext(diariesSection)
+                
+                self?.saveDataLocal(diariesSection)
                 
                 self?.navigationController?.popViewController(animated: true)
             },
@@ -197,11 +201,17 @@ class DiaryListViewController: UIViewController{
         navigationController?.pushViewController(diaryDetailViewController, animated: true)
     }
     
-    func saveLocal() {
-        let flattened = self.groupSortedDiary.flatMap { $0 }
+    func saveDataLocal(_ diariesSection: Array<DiarySection>) {
+        var diarylist = [Diary]()
+        let flattened = diariesSection.compactMap { $0 }
+        for diarysection in flattened{
+            for diary_obj in diarysection.items{
+                diarylist.append(diary_obj)
+            }
+        }
         let encoder = JSONEncoder()
-        if let eventsData = try? encoder.encode(flattened) {
-          try? eventsData.write(to: diaryFileURL, options: .atomicWrite)
+        if let diariesData = try? encoder.encode(diarylist) {
+            try? diariesData.write(to: diaryFileURL, options: .atomicWrite)
         }
     }
     
@@ -214,8 +224,14 @@ class DiaryListViewController: UIViewController{
     
     func bindDatasourceToCollectionView(){
         let sections = self.transformToDiarySection(diaries: self.diaries.value)
-        sections
-            .bind(to: self.collectionView.rx.items(dataSource: self.dataSource))
+        
+        sections.bind(to: self.diariesSection)
+                .disposed(by: bag)
+        
+        self.diariesSection
+            .debug()
+            .asDriver(onErrorJustReturn: [])
+            .drive(collectionView.rx.items(dataSource: self.dataSource))
             .disposed(by: self.bag)
     }
 }
